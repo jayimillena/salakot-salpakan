@@ -196,24 +196,16 @@ function drop(e) {
     const x = parseInt(e.target.getAttribute('data-x'));
     const y = parseInt(e.target.getAttribute('data-y'));
 
-    // Ensure the move is one step away
-    const deltaX = Math.abs(x - startX);
-    const deltaY = Math.abs(y - startY);
+    // Allow dropping on any empty cell
+    if (e.target.classList.contains('cell') && !e.target.hasChildNodes()) {
+        e.target.appendChild(draggedPiece);
 
-    if ((deltaX === 1 && deltaY === 0) || (deltaX === 0 && deltaY === 1)) {
-        // Valid move: either 1 step vertically or horizontally
-        if (e.target.classList.contains('cell') && !e.target.hasChildNodes()) {
-            e.target.appendChild(draggedPiece);
-
-            // Update the internal board state
-            board[startX][startY] = null;
-            board[x][y] = draggedPiece.textContent;
-        }
-    } else {
-        // Invalid move: do nothing or show an alert if needed
-        alert('Invalid move! You can only move 1 step in any direction.');
+        // Update the internal board state
+        board[startX][startY] = null;
+        board[x][y] = draggedPiece.textContent;
     }
 }
+
 
 // Initialize the board on page load
 initializeBoard();
