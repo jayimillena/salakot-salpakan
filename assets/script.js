@@ -1,5 +1,6 @@
 let gameStarted = false; // Variable to track if the game has started
 let piecesDeployed = false; // Variable to track if the pieces have been deployed
+let currentPlayer = 1; // Track the current player's turn (1 for Player 1, 2 for Player 2)
 
 // Add an event listener to the "Position Your Forces" button
 createMatchButton.addEventListener('click', () => {
@@ -24,17 +25,16 @@ createMatchButton.addEventListener('click', () => {
         lockPiecesInPlace();
 
         // Change the button text to indicate deployment is complete
-        createMatchButton.textContent = 'Pieces Deployed';
+        createMatchButton.textContent = 'Deploy Your Forces';
 
         // Set piecesDeployed to true to prevent any further action
         piecesDeployed = true;
 
         // Add the "Surrender" button next to "Pieces Deployed"
         addSurrenderButton();
-    } if (createMatchButton.textContent = 'Pieces Deployed') {
-        enableDragging();
+    } if (piecesDeployed) {
+        enableDraggingForPlayer(currentPlayer)
     }
-
 });
 
 // Function to add the "Surrender" button
@@ -51,6 +51,14 @@ function addSurrenderButton() {
     document.getElementById('buttonContainer').appendChild(surrenderButton);
 }
 
+// Helper function to check if the move is valid (1 cell in any direction)
+function isValidMove(startX, startY, endX, endY) {
+    const dx = Math.abs(endX - startX);
+    const dy = Math.abs(endY - startY);
+
+    // Allow movement only if it's one cell up, down, left, or right
+    return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
+}
 
 // Function to enable dragging after the game starts
 function enableDragging() {
@@ -67,6 +75,22 @@ function lockPiecesInPlace() {
         // Disable dragging for all pieces
         piece.draggable = false;
     });
+}
+
+function enableDraggingForPlayer(currentPlayer)
+{
+    if (currentPlayer === 1) 
+    {
+        const player1Pieces = document.querySelectorAll('.piece');
+
+        console.log(player1Pieces);
+        
+        player1Pieces.forEach(piece => {
+            // Enabling dragging player 1 pieces
+            piece.draggable = true;
+        });
+    }
+
 }
 
 // Image map: Links ranks to image files
@@ -237,20 +261,25 @@ function drop(e) {
     const targetPiece = targetCell.querySelector('.piece');
 
     // Ensure players don't move or swap pieces outside their allowed rows
-    if (draggedPiece.classList.contains('player1') && x < 4) {
+    if (draggedPiece.classList.contains('player1') && x < 4) 
+    {
         return; // Prevent Player 1's pieces from moving into the top four rows (0 to 3)
     }
-    if (draggedPiece.classList.contains('player2') && x >= 4) {
+    if (draggedPiece.classList.contains('player2') && x >= 4) 
+    {
         return; // Prevent Player 2's pieces from moving into the bottom four rows (4 to 7)
     }
 
     // Handle swapping if the target cell already has a piece
-    if (targetPiece) {
+    if (targetPiece) 
+    {
         // Prevent swapping between players' pieces
-        if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) {
+        if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) 
+        {
             return; // Abort if Player 1 tries to swap with Player 2's piece
         }
-        if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) {
+        if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) 
+        {
             return; // Abort if Player 2 tries to swap with Player 1's piece
         }
 
@@ -266,7 +295,10 @@ function drop(e) {
         // Update board state
         board[startX][startY] = targetPiece ? targetPiece.textContent : null;
         board[x][y] = draggedPiece.textContent;
-    } else {
+
+    } 
+    else 
+    {
         // If the target cell is empty, just move the dragged piece
         targetCell.appendChild(draggedPiece);
 
