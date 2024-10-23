@@ -65,8 +65,8 @@ const pieces = [
     { rank: 'P2Spy1', player: 2 }, { rank: 'P2Spy2', player: 2 }, { rank: 'P2Flg', player: 2 },
 ];
 
-// Create board and place pieces
 const gameBoard = document.getElementById('gameBoard');
+
 let board = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
 // Helper function to create pieces
@@ -102,12 +102,18 @@ function initializeBoard() {
         }
     }
 
-    // Randomly place the pieces on the board for both players
+    // Place the pieces on the board for both players
     pieces.forEach((piece) => {
         let x, y;
         do {
-            x = Math.floor(Math.random() * rows);
-            y = Math.floor(Math.random() * cols);
+            if (piece.player === 2) {
+                // Player 1's pieces are placed in the top three rows (0, 1, 2)
+                x = Math.floor(Math.random() * 3); // Ensures x is 0, 1, or 2
+            } else if (piece.player === 1) {
+                // Player 2's pieces are placed in the bottom three rows (5, 6, 7)
+                x = Math.floor(Math.random() * 3) + (rows - 3); // Ensures x is 5, 6, or 7
+            }
+            y = Math.floor(Math.random() * cols); // Random column for both players
         } while (board[x][y]); // Avoid placing multiple pieces in the same cell
 
         const pieceElement = createPiece(piece.rank, piece.player);
@@ -115,6 +121,7 @@ function initializeBoard() {
         cell.appendChild(pieceElement);
         board[x][y] = piece;
     });
+
 }
 
 // Drag-and-drop functions
@@ -125,14 +132,17 @@ function dragStart(e) {
     draggedPiece = e.target;
     startX = parseInt(draggedPiece.parentNode.getAttribute('data-x'));
     startY = parseInt(draggedPiece.parentNode.getAttribute('data-y'));
+
     setTimeout(() => {
-        e.target.style.display = 'none';
+        draggedPiece.style.display = 'none';
     }, 0);
 }
 
 function dragEnd(e) {
     setTimeout(() => {
-        draggedPiece.style.display = 'flex';
+        if (draggedPiece) {
+            draggedPiece.style.display = 'flex';
+        }
         draggedPiece = null;
         startX = null;
         startY = null;
@@ -144,16 +154,37 @@ function dragOver(e) {
 }
 
 function drop(e) {
+    e.preventDefault();
     const x = parseInt(e.target.getAttribute('data-x'));
     const y = parseInt(e.target.getAttribute('data-y'));
 
-    // Allow dropping on any empty cell
-    if (e.target.classList.contains('cell') && !e.target.hasChildNodes()) {
-        e.target.appendChild(draggedPiece);
+    const targetCell = e.target;
 
-        // Update the internal board state
-        board[startX][startY] = null;
-        board[x][y] = draggedPiece.textContent;
+    // Check if the target cell has a piece
+    if (targetCell.classList.contains('cell')) {
+        if (targetCell.hasChildNodes()) {
+            const targetPiece = targetCell.firstChild; // The piece currently in the target cell
+
+            // Perform piece swapping (regardless of player)
+            if (targetPiece && draggedPiece) {
+                // Swap pieces visually
+                const startCell = gameBoard.querySelector(`[data-x="${startX}"][data-y="${startY}"]`);
+                startCell.appendChild(targetPiece);  // Move the piece from the target cell to the start cell
+                targetCell.appendChild(draggedPiece); // Move the dragged piece to the target cell
+
+                // Update the internal board state
+                const temp = board[x][y]; // Temporarily store the target cell's piece
+                board[x][y] = board[startX][startY]; // Move the dragged piece to the target cell
+                board[startX][startY] = temp; // Move the target piece to the start cell
+            }
+        } else {
+            // If the target cell is empty, simply move the dragged piece there
+            targetCell.appendChild(draggedPiece);
+
+            // Update the internal board state
+            board[startX][startY] = null;
+            board[x][y] = draggedPiece.textContent;
+        }
     }
 }
 
