@@ -65,8 +65,8 @@ const pieces = [
     { rank: 'P2Spy1', player: 2 }, { rank: 'P2Spy2', player: 2 }, { rank: 'P2Flg', player: 2 },
 ];
 
+// Create board and place pieces
 const gameBoard = document.getElementById('gameBoard');
-
 let board = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
 // Helper function to create pieces
@@ -134,7 +134,7 @@ function dragStart(e) {
     startY = parseInt(draggedPiece.parentNode.getAttribute('data-y'));
 
     setTimeout(() => {
-        draggedPiece.style.display = 'none';
+        e.target.style.display = 'none';
     }, 0);
 }
 
@@ -154,37 +154,25 @@ function dragOver(e) {
 }
 
 function drop(e) {
-    e.preventDefault();
     const x = parseInt(e.target.getAttribute('data-x'));
     const y = parseInt(e.target.getAttribute('data-y'));
 
-    const targetCell = e.target;
-
-    // Check if the target cell has a piece
-    if (targetCell.classList.contains('cell')) {
-        if (targetCell.hasChildNodes()) {
-            const targetPiece = targetCell.firstChild; // The piece currently in the target cell
-
-            // Perform piece swapping (regardless of player)
-            if (targetPiece && draggedPiece) {
-                // Swap pieces visually
-                const startCell = gameBoard.querySelector(`[data-x="${startX}"][data-y="${startY}"]`);
-                startCell.appendChild(targetPiece);  // Move the piece from the target cell to the start cell
-                targetCell.appendChild(draggedPiece); // Move the dragged piece to the target cell
-
-                // Update the internal board state
-                const temp = board[x][y]; // Temporarily store the target cell's piece
-                board[x][y] = board[startX][startY]; // Move the dragged piece to the target cell
-                board[startX][startY] = temp; // Move the target piece to the start cell
-            }
-        } else {
-            // If the target cell is empty, simply move the dragged piece there
-            targetCell.appendChild(draggedPiece);
-
-            // Update the internal board state
-            board[startX][startY] = null;
-            board[x][y] = draggedPiece.textContent;
+    // Allow dropping on any empty cell
+    if (e.target.classList.contains('cell') && !e.target.hasChildNodes()) {
+        // Check if the dragged piece is Player 1's and if the drop target is one of the top four rows
+        if (draggedPiece.classList.contains('player1') && x < 4) {
+            // alert("Player 1 pieces cannot be moved to the top four rows!");
+            return; // Abort the drop
+        } else if (draggedPiece.classList.contains('player2') && x >= 4) {
+            // alert("Player 2 pieces cannot be moved to the bottom four rows!");
+            return; // Abort the drop
         }
+
+        e.target.appendChild(draggedPiece);
+
+        // Update the internal board state
+        board[startX][startY] = null;
+        board[x][y] = draggedPiece.textContent;
     }
 }
 
