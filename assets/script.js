@@ -154,23 +154,41 @@ function dragOver(e) {
 }
 
 function drop(e) {
-    const x = parseInt(e.target.getAttribute('data-x'));
-    const y = parseInt(e.target.getAttribute('data-y'));
+    const startX = parseInt(e.target.getAttribute('data-x'));
+    const startY = parseInt(e.target.getAttribute('data-y'));
+    
+    const targetCell = e.target.classList.contains('piece') ? e.target.parentNode : e.target;
 
-    // Allow dropping on any empty cell
-    if (e.target.classList.contains('cell') && !e.target.hasChildNodes()) {
-        // Check if the dragged piece is Player 1's and if the drop target is one of the top four rows
-        if (draggedPiece.classList.contains('player1') && x < 4) {
-            // alert("Player 1 pieces cannot be moved to the top four rows!");
-            return; // Abort the drop
-        } else if (draggedPiece.classList.contains('player2') && x >= 4) {
-            // alert("Player 2 pieces cannot be moved to the bottom four rows!");
-            return; // Abort the drop
-        }
+    // Check if the dragged piece belongs to player1 and if the target is within the invalid rows
+    if (draggedPiece.classList.contains('player1') && startX < 4) {
+        return; // Abort the drop if player1 piece is dragged to the top rows
+    }
 
-        e.target.appendChild(draggedPiece);
+    // Check if the dragged piece belongs to player2 and if the target is within the invalid rows
+    else if (draggedPiece.classList.contains('player2') && startX >= 4) {
+        return; // Abort the drop if player2 piece is dragged to the bottom rows
+    }
 
-        // Update the internal board state
+    const targetPiece = targetCell.querySelector('.piece');
+
+    if (targetPiece) {
+        // If there is a piece in the target cell, swap pieces
+        const originalCell = draggedPiece.parentNode;
+
+        // Move the target piece to the dragged piece's original cell
+        originalCell.appendChild(targetPiece);
+
+        // Move the dragged piece to the target cell
+        targetCell.appendChild(draggedPiece);
+
+        // Update board state
+        board[startX][startY] = targetPiece ? targetPiece.textContent : null;
+        board[x][y] = draggedPiece.textContent;
+    } else {
+        // If the target cell is empty, just move the dragged piece
+        targetCell.appendChild(draggedPiece);
+
+        // Update board state
         board[startX][startY] = null;
         board[x][y] = draggedPiece.textContent;
     }
@@ -178,3 +196,5 @@ function drop(e) {
 
 // Initialize the board on page load
 initializeBoard();
+
+
