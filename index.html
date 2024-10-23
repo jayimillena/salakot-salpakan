@@ -5,10 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salpakan - Salakot</title>
     <link rel="stylesheet" href="assets/style.css" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
-    <div class="board" id="gameBoard"></div>
+
+    <div id="gameContainer" class="flex flex-col items-center mt-6">
+        <div id="gameBoard" class="grid grid-cols-9 grid-rows-8 gap-2 mb-4"></div>
+        <!-- Button container to hold the buttons -->
+        <div id="buttonContainer" class="flex gap-2">
+            <!-- Create Match button (changes to 'Pieces Deployed') -->
+            <button id="createMatchButton" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
+                Position Your Forces
+            </button>
+        </div>
+    </div>
+    
     <script src="assets/script.js" type="text/javascript"></script>
 </body>
 </html>

@@ -1,3 +1,74 @@
+let gameStarted = false; // Variable to track if the game has started
+let piecesDeployed = false; // Variable to track if the pieces have been deployed
+
+// Add an event listener to the "Position Your Forces" button
+createMatchButton.addEventListener('click', () => {
+    if (!gameStarted) {
+        // Clear the game board and reset the board array
+        gameBoard.innerHTML = '';
+        board = Array(rows).fill(null).map(() => Array(cols).fill(null));
+        
+        // Initialize the board again
+        initializeBoard();
+
+        // Enable dragging for all pieces after the game starts
+        enableDragging();
+
+        // Change the button text to "Deploy"
+        createMatchButton.textContent = 'Deploy';
+
+        // Set gameStarted to true to allow piece arrangement
+        gameStarted = true;
+    } else if (!piecesDeployed) {
+        // Lock the pieces in place and prevent further dragging
+        lockPiecesInPlace();
+
+        // Change the button text to indicate deployment is complete
+        createMatchButton.textContent = 'Pieces Deployed';
+
+        // Set piecesDeployed to true to prevent any further action
+        piecesDeployed = true;
+
+        // Add the "Surrender" button next to "Pieces Deployed"
+        addSurrenderButton();
+    } if (createMatchButton.textContent = 'Pieces Deployed') {
+        enableDragging();
+    }
+
+});
+
+// Function to add the "Surrender" button
+function addSurrenderButton() {
+    const surrenderButton = document.createElement('button');
+    surrenderButton.textContent = 'Surrender';
+    surrenderButton.classList.add('px-6', 'py-2', 'bg-red-500', 'text-white', 'font-semibold', 'rounded-lg', 'hover:bg-red-600', 'ml-4'); // Tailwind classes
+    surrenderButton.addEventListener('click', () => {
+        alert('You have surrendered!');
+        // You can add more logic here for what happens when a player surrenders
+    });
+    
+    // Add the button next to "Pieces Deployed"
+    document.getElementById('buttonContainer').appendChild(surrenderButton);
+}
+
+
+// Function to enable dragging after the game starts
+function enableDragging() {
+    const allPieces = document.querySelectorAll('.piece');
+    allPieces.forEach(piece => {
+        piece.draggable = true;
+    });
+}
+
+// Function to lock pieces in place after deployment
+function lockPiecesInPlace() {
+    const allPieces = document.querySelectorAll('.piece');
+    allPieces.forEach(piece => {
+        // Disable dragging for all pieces
+        piece.draggable = false;
+    });
+}
+
 // Image map: Links ranks to image files
 const pieceImages = {
     'P15SG': 'images/Player15SG.png',
@@ -154,25 +225,36 @@ function dragOver(e) {
 }
 
 function drop(e) {
-    const startX = parseInt(e.target.getAttribute('data-x'));
-    const startY = parseInt(e.target.getAttribute('data-y'));
-    
+
+    if (!gameStarted) return; // Do not allow drop if the game hasn't started
+
+    const x = parseInt(e.target.getAttribute('data-x'));
+    const y = parseInt(e.target.getAttribute('data-y'));
+
     const targetCell = e.target.classList.contains('piece') ? e.target.parentNode : e.target;
 
-    // Check if the dragged piece belongs to player1 and if the target is within the invalid rows
-    if (draggedPiece.classList.contains('player1') && startX < 4) {
-        return; // Abort the drop if player1 piece is dragged to the top rows
-    }
-
-    // Check if the dragged piece belongs to player2 and if the target is within the invalid rows
-    else if (draggedPiece.classList.contains('player2') && startX >= 4) {
-        return; // Abort the drop if player2 piece is dragged to the bottom rows
-    }
-
+    // Get the target piece in the cell being dropped onto (if any)
     const targetPiece = targetCell.querySelector('.piece');
 
+    // Ensure players don't move or swap pieces outside their allowed rows
+    if (draggedPiece.classList.contains('player1') && x < 4) {
+        return; // Prevent Player 1's pieces from moving into the top four rows (0 to 3)
+    }
+    if (draggedPiece.classList.contains('player2') && x >= 4) {
+        return; // Prevent Player 2's pieces from moving into the bottom four rows (4 to 7)
+    }
+
+    // Handle swapping if the target cell already has a piece
     if (targetPiece) {
-        // If there is a piece in the target cell, swap pieces
+        // Prevent swapping between players' pieces
+        if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) {
+            return; // Abort if Player 1 tries to swap with Player 2's piece
+        }
+        if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) {
+            return; // Abort if Player 2 tries to swap with Player 1's piece
+        }
+
+        // Swap pieces between the original and target cells
         const originalCell = draggedPiece.parentNode;
 
         // Move the target piece to the dragged piece's original cell
@@ -193,6 +275,7 @@ function drop(e) {
         board[x][y] = draggedPiece.textContent;
     }
 }
+
 
 // Initialize the board on page load
 initializeBoard();
