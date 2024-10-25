@@ -160,6 +160,18 @@ const pieces = [
     { rank: 'P2Spy1', player: 2 }, { rank: 'P2Spy2', player: 2 }, { rank: 'P2Flg', player: 2 },
 ];
 
+const rankHierarchy = {
+    'P15SG': 15, 'P14SG': 14, 'P13SG': 13, 'P12SG': 12, 'P11SG': 11,
+    'P1Col': 10, 'P1LC': 9, 'P1Maj': 8, 'P1Cap': 7, 'P11Li': 6, 'P12Li': 5,
+    'P1Sgt': 4, 'P1Prv1': 3, 'P1Prv2': 3, 'P1Prv3': 3, 'P1Prv4': 3, 'P1Prv5': 3, 'P1Prv6': 3,
+    'P1Spy1': 2, 'P1Spy2': 2, 'P1Flg': 1,
+
+    'P25SG': 15, 'P24SG': 14, 'P23SG': 13, 'P22SG': 12, 'P21SG': 11,
+    'P2Col': 10, 'P2LC': 9, 'P2Maj': 8, 'P2Cap': 7, 'P21Li': 6, 'P22Li': 5,
+    'P2Sgt': 4, 'P2Prv1': 3, 'P2Prv2': 3, 'P2Prv3': 3, 'P2Prv4': 3, 'P2Prv5': 3, 'P2Prv6': 3,
+    'P2Spy1': 2, 'P2Spy2': 2, 'P2Flg': 1
+};
+
 // Create board and place pieces
 const gameBoard = document.getElementById('gameBoard');
 let board = Array(rows).fill(null).map(() => Array(cols).fill(null));
@@ -248,8 +260,8 @@ function dragOver(e) {
     e.preventDefault();
 }
 
-function drop(e) {
-
+function drop(e) 
+{
     if (!gameStarted) return; // Do not allow drop if the game hasn't started
 
     const x = parseInt(e.target.getAttribute('data-x'));
