@@ -1,4 +1,4 @@
-Salpakan - Game of the Generals
+Salpakan - Game of the Generals (Under Development)
 
 Salpakan (also known as *Game of the Generals*) is a strategy board game designed for two players. 
 Each player commands an army, aiming to capture their opponent's flag while strategically eliminating opposing pieces. 
