@@ -1,80 +1,72 @@
-let gameStarted = false; // Variable to track if the game has started
-let piecesDeployed = false; // Variable to track if the pieces have been deployed
-let currentPlayer = 1; // Track the current player's turn (1 for Player 1, 2 for Player 2)
-let piecePositioned = false; // Variable to position pieces
+let gameStarted = false; 
+let piecesDeployed = false;
+let currentPlayer = 1; 
+let piecePositioned = false;
 
-// Add an event listener to the "Position Your Forces" button
+
 createMatchButton.addEventListener('click', () => {
-    if (!gameStarted) {
-        // Clear the game board and reset the board array
+    if (!gameStarted) 
+    {
         gameBoard.innerHTML = '';
         board = Array(rows).fill(null).map(() => Array(cols).fill(null));
         
-        // Initialize the board again
         initializeBoard();
 
-        // Enable dragging for all pieces after the game starts
         enableDragging();
 
-        // Change the button text to "Deploy"
         createMatchButton.textContent = 'Deploy';
 
-        // Set gameStarted to true to allow piece arrangement
         gameStarted = true;
-    } else if (!piecesDeployed) {
-        // Lock the pieces in place and prevent further dragging
+    } 
+    else if (!piecesDeployed) 
+    {
         lockPiecesInPlace();
 
-        // Change the button text to indicate deployment is complete
         createMatchButton.textContent = 'Deploy Your Forces';
 
-        // Set piecesDeployed to true to prevent any further action
         piecesDeployed = true;
 
-        // Add the "Surrender" button next to "Pieces Deployed"
         addSurrenderButton();
-    } if (piecesDeployed) {
+    } 
+    if (piecesDeployed) 
+    {
         piecePositioned = true;
         enableDraggingForPlayer(currentPlayer);
     }
 });
 
-// Function to add the "Surrender" button
-function addSurrenderButton() {
+function addSurrenderButton() 
+{
     const surrenderButton = document.createElement('button');
     surrenderButton.textContent = 'Surrender';
     surrenderButton.classList.add('px-6', 'py-2', 'bg-red-500', 'text-white', 'font-semibold', 'rounded-lg', 'hover:bg-red-600', 'ml-4'); // Tailwind classes
     surrenderButton.addEventListener('click', () => {
         alert('You have surrendered!');
-        // You can add more logic here for what happens when a player surrenders
     });
     
-    // Add the button next to "Pieces Deployed"
     document.getElementById('buttonContainer').appendChild(surrenderButton);
 }
 
-// Helper function to check if the move is valid (1 cell in any direction)
-function isValidMove(startX, startY, endX, endY) {
+function isValidMove(startX, startY, endX, endY) 
+{
     const dx = Math.abs(endX - startX);
     const dy = Math.abs(endY - startY);
 
-    // Allow movement only if it's one cell up, down, left, or right
     return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
 }
 
-// Function to enable dragging after the game starts
-function enableDragging() {
+function enableDragging() 
+{
     const allPieces = document.querySelectorAll('.piece');
     allPieces.forEach(piece => {
         piece.draggable = true;
     });
 }
 
-// Function to lock pieces in place after deployment
-function lockPiecesInPlace() {
+function lockPiecesInPlace() 
+{
     const allPieces = document.querySelectorAll('.piece');
     allPieces.forEach(piece => {
-        // Disable dragging for all pieces
         piece.draggable = false;
     });
 }
@@ -88,7 +80,6 @@ function enableDraggingForPlayer(currentPlayer)
         console.log(player1Pieces);
         
         player1Pieces.forEach(piece => {
-            // Enabling dragging player 1 pieces
             piece.draggable = true;
         });
     } 
@@ -142,7 +133,7 @@ const pieceImages = {
 };
 
 const rows = 8;
-const cols = 9; // 9 columns for the 9x8 board
+const cols = 9;
 const pieces = [
     { rank: 'P15SG', player: 1 }, { rank: 'P14SG', player: 1 }, { rank: 'P13SG', player: 1 },
     { rank: 'P12SG', player: 1 }, { rank: 'P11SG', player: 1 }, { rank: 'P1Col', player: 1 },
@@ -173,31 +164,30 @@ const rankHierarchy = {
     'P2Spy1': 2, 'P2Spy2': 2, 'P2Flg': 1
 };
 
-// Create board and place pieces
 const gameBoard = document.getElementById('gameBoard');
 let board = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
-// Helper function to create pieces
-function createPiece(rank, player) {
+function createPiece(rank, player) 
+{
     const piece = document.createElement('div');
     piece.classList.add('piece', `player${player}`);
     
-    // Set background image for the piece
     piece.style.backgroundImage = `url(${pieceImages[rank]})`;
 
     piece.draggable = true;
 
-    // Drag and Drop Event Listeners
     piece.addEventListener('dragstart', dragStart);
     piece.addEventListener('dragend', dragEnd);
 
     return piece;
 }
 
-// Generate the board and randomly place pieces for both players
-function initializeBoard() {
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
+function initializeBoard() 
+{
+    for (let i = 0; i < rows; i++) 
+    {
+        for (let j = 0; j < cols; j++) 
+        {
             const cell = document.createElement('div');
             cell.classList.add('cell');
             cell.setAttribute('data-x', i);
@@ -210,19 +200,20 @@ function initializeBoard() {
         }
     }
 
-    // Place the pieces on the board for both players
     pieces.forEach((piece) => {
         let x, y;
-        do {
-            if (piece.player === 2) {
-                // Player 1's pieces are placed in the top three rows (0, 1, 2)
-                x = Math.floor(Math.random() * 3); // Ensures x is 0, 1, or 2
-            } else if (piece.player === 1) {
-                // Player 2's pieces are placed in the bottom three rows (5, 6, 7)
-                x = Math.floor(Math.random() * 3) + (rows - 3); // Ensures x is 5, 6, or 7
+        do 
+        {
+            if (piece.player === 2) 
+            {
+                x = Math.floor(Math.random() * 3); 
+            } 
+            else if (piece.player === 1) 
+            {
+                x = Math.floor(Math.random() * 3) + (rows - 3); 
             }
-            y = Math.floor(Math.random() * cols); // Random column for both players
-        } while (board[x][y]); // Avoid placing multiple pieces in the same cell
+            y = Math.floor(Math.random() * cols); 
+        } while (board[x][y]); 
 
         const pieceElement = createPiece(piece.rank, piece.player);
         const cell = gameBoard.querySelector(`[data-x="${x}"][data-y="${y}"]`);
@@ -232,11 +223,11 @@ function initializeBoard() {
 
 }
 
-// Drag-and-drop functions
 let draggedPiece = null;
 let startX = null, startY = null;
 
-function dragStart(e) {
+function dragStart(e) 
+{
     draggedPiece = e.target;
     startX = parseInt(draggedPiece.parentNode.getAttribute('data-x'));
     startY = parseInt(draggedPiece.parentNode.getAttribute('data-y'));
@@ -246,9 +237,11 @@ function dragStart(e) {
     }, 0);
 }
 
-function dragEnd(e) {
+function dragEnd(e) 
+{
     setTimeout(() => {
-        if (draggedPiece) {
+        if (draggedPiece) 
+        {
             draggedPiece.style.display = 'flex';
         }
         draggedPiece = null;
@@ -265,77 +258,58 @@ function drop(e)
 {
     if (!piecePositioned)
     {
-        if (!gameStarted) return; // Do not allow drop if the game hasn't started
+        if (!gameStarted) return; 
 
         const x = parseInt(e.target.getAttribute('data-x'));
         const y = parseInt(e.target.getAttribute('data-y'));
 
         const targetCell = e.target.classList.contains('piece') ? e.target.parentNode : e.target;
 
-        // Get the target piece in the cell being dropped onto (if any)
         const targetPiece = targetCell.querySelector('.piece');
 
-        // Ensure players don't move or swap pieces outside their allowed rows
         if (draggedPiece.classList.contains('player1') && x < 4) 
         {
-            return; // Prevent Player 1's pieces from moving into the top four rows (0 to 3)
+            return; 
         }
         if (draggedPiece.classList.contains('player2') && x >= 4) 
         {
-            return; // Prevent Player 2's pieces from moving into the bottom four rows (4 to 7)
+            return; 
         }
 
-        // Handle swapping if the target cell already has a piece
         if (targetPiece) 
         {
-            // Prevent swapping between players' pieces
             if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) 
             {
-                return; // Abort if Player 1 tries to swap with Player 2's piece
+                return; 
             }
             if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) 
             {
-                return; // Abort if Player 2 tries to swap with Player 1's piece
+                return; 
             }
 
-            // Swap pieces between the original and target cells
             const originalCell = draggedPiece.parentNode;
 
-            // Move the target piece to the dragged piece's original cell
             originalCell.appendChild(targetPiece);
 
-            // Move the dragged piece to the target cell
             targetCell.appendChild(draggedPiece);
 
-            // Update board state
             board[startX][startY] = targetPiece ? targetPiece.textContent : null;
             board[x][y] = draggedPiece.textContent;
 
         } 
         else 
         {
-            // If the target cell is empty, just move the dragged piece
             targetCell.appendChild(draggedPiece);
 
-            // Update board state
             board[startX][startY] = null;
             board[x][y] = draggedPiece.textContent;
         }
     }
-    else 
-    {
-        
-    }
-
-    // Switch to the other player's turn
     currentPlayer = currentPlayer === 1 ? 2 : 1;
 
-    // Enable dragging only for the current player's pieces
     enableDraggingForPlayer(currentPlayer);
 }
 
-
-// Initialize the board on page load
 initializeBoard();
 
 
