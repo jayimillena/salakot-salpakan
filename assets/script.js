@@ -1,6 +1,7 @@
 let gameStarted = false; // Variable to track if the game has started
 let piecesDeployed = false; // Variable to track if the pieces have been deployed
 let currentPlayer = 1; // Track the current player's turn (1 for Player 1, 2 for Player 2)
+let piecePositioned = false; // Variable to position pieces
 
 // Add an event listener to the "Position Your Forces" button
 createMatchButton.addEventListener('click', () => {
@@ -33,7 +34,8 @@ createMatchButton.addEventListener('click', () => {
         // Add the "Surrender" button next to "Pieces Deployed"
         addSurrenderButton();
     } if (piecesDeployed) {
-        enableDraggingForPlayer(currentPlayer)
+        piecePositioned = true;
+        enableDraggingForPlayer(currentPlayer);
     }
 });
 
@@ -89,8 +91,7 @@ function enableDraggingForPlayer(currentPlayer)
             // Enabling dragging player 1 pieces
             piece.draggable = true;
         });
-    }
-
+    } 
 }
 
 // Image map: Links ranks to image files
@@ -262,62 +263,75 @@ function dragOver(e) {
 
 function drop(e) 
 {
-    if (!gameStarted) return; // Do not allow drop if the game hasn't started
-
-    const x = parseInt(e.target.getAttribute('data-x'));
-    const y = parseInt(e.target.getAttribute('data-y'));
-
-    const targetCell = e.target.classList.contains('piece') ? e.target.parentNode : e.target;
-
-    // Get the target piece in the cell being dropped onto (if any)
-    const targetPiece = targetCell.querySelector('.piece');
-
-    // Ensure players don't move or swap pieces outside their allowed rows
-    if (draggedPiece.classList.contains('player1') && x < 4) 
+    if (!piecePositioned)
     {
-        return; // Prevent Player 1's pieces from moving into the top four rows (0 to 3)
-    }
-    if (draggedPiece.classList.contains('player2') && x >= 4) 
-    {
-        return; // Prevent Player 2's pieces from moving into the bottom four rows (4 to 7)
-    }
+        if (!gameStarted) return; // Do not allow drop if the game hasn't started
 
-    // Handle swapping if the target cell already has a piece
-    if (targetPiece) 
-    {
-        // Prevent swapping between players' pieces
-        if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) 
+        const x = parseInt(e.target.getAttribute('data-x'));
+        const y = parseInt(e.target.getAttribute('data-y'));
+
+        const targetCell = e.target.classList.contains('piece') ? e.target.parentNode : e.target;
+
+        // Get the target piece in the cell being dropped onto (if any)
+        const targetPiece = targetCell.querySelector('.piece');
+
+        // Ensure players don't move or swap pieces outside their allowed rows
+        if (draggedPiece.classList.contains('player1') && x < 4) 
         {
-            return; // Abort if Player 1 tries to swap with Player 2's piece
+            return; // Prevent Player 1's pieces from moving into the top four rows (0 to 3)
         }
-        if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) 
+        if (draggedPiece.classList.contains('player2') && x >= 4) 
         {
-            return; // Abort if Player 2 tries to swap with Player 1's piece
+            return; // Prevent Player 2's pieces from moving into the bottom four rows (4 to 7)
         }
 
-        // Swap pieces between the original and target cells
-        const originalCell = draggedPiece.parentNode;
+        // Handle swapping if the target cell already has a piece
+        if (targetPiece) 
+        {
+            // Prevent swapping between players' pieces
+            if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) 
+            {
+                return; // Abort if Player 1 tries to swap with Player 2's piece
+            }
+            if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) 
+            {
+                return; // Abort if Player 2 tries to swap with Player 1's piece
+            }
 
-        // Move the target piece to the dragged piece's original cell
-        originalCell.appendChild(targetPiece);
+            // Swap pieces between the original and target cells
+            const originalCell = draggedPiece.parentNode;
 
-        // Move the dragged piece to the target cell
-        targetCell.appendChild(draggedPiece);
+            // Move the target piece to the dragged piece's original cell
+            originalCell.appendChild(targetPiece);
 
-        // Update board state
-        board[startX][startY] = targetPiece ? targetPiece.textContent : null;
-        board[x][y] = draggedPiece.textContent;
+            // Move the dragged piece to the target cell
+            targetCell.appendChild(draggedPiece);
 
-    } 
+            // Update board state
+            board[startX][startY] = targetPiece ? targetPiece.textContent : null;
+            board[x][y] = draggedPiece.textContent;
+
+        } 
+        else 
+        {
+            // If the target cell is empty, just move the dragged piece
+            targetCell.appendChild(draggedPiece);
+
+            // Update board state
+            board[startX][startY] = null;
+            board[x][y] = draggedPiece.textContent;
+        }
+    }
     else 
     {
-        // If the target cell is empty, just move the dragged piece
-        targetCell.appendChild(draggedPiece);
-
-        // Update board state
-        board[startX][startY] = null;
-        board[x][y] = draggedPiece.textContent;
+        
     }
+
+    // Switch to the other player's turn
+    currentPlayer = currentPlayer === 1 ? 2 : 1;
+
+    // Enable dragging only for the current player's pieces
+    enableDraggingForPlayer(currentPlayer);
 }
 
 
