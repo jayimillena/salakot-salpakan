@@ -5,29 +5,45 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
+    margin: 0;
 }
+
 .board {
     display: grid;
-    grid-template-columns: repeat(9, 60px); /* 9 columns */
-    grid-template-rows: repeat(8, 60px);    /* 8 rows */
+    grid-template-columns: repeat(9, 80px); /* Adjusted width for wider cells */
+    grid-template-rows: repeat(8, 60px); 
     gap: 5px;
 }
+
 .cell {
-    width: 60px;
+    width: 80px; /* Adjusted cell width */
     height: 60px;
-    background-color: #ccc;
+    background-color: #ddd;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid #999;
+    position: relative;
 }
+
 .piece {
-    width: 50px;
+    width: 80px; /* Adjusted width for the piece to match new cell width */
     height: 50px;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     cursor: pointer;
     user-select: none;
     border: 2px solid #666;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player1 {
+    border-color: #007bff;
+}
+
+.player2 {
+    border-color: #ff4500;
 }
