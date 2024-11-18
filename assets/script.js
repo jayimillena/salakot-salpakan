@@ -3,11 +3,13 @@ let piecesDeployed = false;
 let currentPlayer = 1; 
 let piecePositioned = false;
 
+
 createMatchButton.addEventListener('click', () => {
-    if (!gameStarted) {
+    if (!gameStarted) 
+    {
         gameBoard.innerHTML = '';
         board = Array(rows).fill(null).map(() => Array(cols).fill(null));
-
+        
         initializeBoard();
 
         enableDragging();
@@ -15,7 +17,9 @@ createMatchButton.addEventListener('click', () => {
         createMatchButton.textContent = 'Deploy';
 
         gameStarted = true;
-    } else if (!piecesDeployed) {
+    } 
+    else if (!piecesDeployed) 
+    {
         lockPiecesInPlace();
 
         createMatchButton.textContent = 'Deploy Your Forces';
@@ -23,15 +27,14 @@ createMatchButton.addEventListener('click', () => {
         piecesDeployed = true;
 
         addSurrenderButton();
-    }
-
-    if (piecesDeployed) {
+    } 
+    if (piecesDeployed) 
+    {
         piecePositioned = true;
         enableDraggingForPlayer(currentPlayer);
-
         createMatchButton.disabled = true;
         createMatchButton.textContent = 'Game Started';
-        createMatchButton.classList.add('opacity-50', 'cursor-not-allowed'); 
+        createMatchButton.classList.add('opacity-50', 'cursor-not-allowed');
     }
 });
 
@@ -85,6 +88,7 @@ function enableDraggingForPlayer(currentPlayer)
     } 
 }
 
+// Image map: Links ranks to image files
 const pieceImages = {
     'P15SG': 'images/Player15SG.png',
     'P14SG': 'images/Player14SG.png',
@@ -227,6 +231,12 @@ let startX = null, startY = null;
 
 function dragStart(e) 
 {
+    if (!gameStarted) 
+    {
+        e.preventDefault();
+        return;
+    }
+
     draggedPiece = e.target;
     startX = parseInt(draggedPiece.parentNode.getAttribute('data-x'));
     startY = parseInt(draggedPiece.parentNode.getAttribute('data-y'));
@@ -296,6 +306,23 @@ function drop(e)
             board[x][y] = draggedPiece.textContent;
 
         } 
+        else if(piecePositioned)
+        {
+            if (piecesDeployed && isValidMove(startX, startY, endX, endY))
+            {
+                targetCell.appendChild(draggedPiece);
+
+                board[startX][startY] = null;
+                board[endX][endY] = draggedPiece.textContent;
+
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                enableDraggingForPlayer(currentPlayer);
+            } 
+            else 
+            {
+                alert("Invalid move or pieces are not deployed!");
+            }
+        }
         else 
         {
             targetCell.appendChild(draggedPiece);
