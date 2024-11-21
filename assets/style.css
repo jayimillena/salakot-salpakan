@@ -47,3 +47,24 @@ body {
 .player2 {
     border-color: #ff4500;
 }
+
+/* Responsive media query */
+@media (max-width: 768px) {
+    .board {
+        grid-template-columns: repeat(9, 40px); /* Smaller cells for mobile */
+        grid-template-rows: repeat(8, 40px);
+        gap: 3px;
+    }
+
+    .cell {
+        width: 40px;
+        height: 40px;
+    }
+
+    .piece {
+        width: 40px;
+        height: 35px;
+    }
+}
+
+
