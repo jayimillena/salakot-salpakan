@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salpakan - Salakot</title>
     <link rel="stylesheet" href="assets/style.css" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
 </head>
 
 <body>
@@ -17,7 +17,7 @@
             </button>
         </div>
     </div>
-    
+
     <script src="assets/script.js" type="text/javascript"></script>
 </body>
 </html>
