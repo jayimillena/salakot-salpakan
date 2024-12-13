@@ -1,15 +1,15 @@
-let gameStarted = false; 
+let gameStarted = false;
 let piecesDeployed = false;
-let currentPlayer = 1; 
+let currentPlayer = 1;
 let piecePositioned = false;
 
 
 createMatchButton.addEventListener('click', () => {
-    if (!gameStarted) 
+    if (!gameStarted)
     {
         gameBoard.innerHTML = '';
         board = Array(rows).fill(null).map(() => Array(cols).fill(null));
-        
+
         initializeBoard();
 
         enableDragging();
@@ -17,8 +17,8 @@ createMatchButton.addEventListener('click', () => {
         createMatchButton.textContent = 'Deploy';
 
         gameStarted = true;
-    } 
-    else if (!piecesDeployed) 
+    }
+    else if (!piecesDeployed)
     {
         lockPiecesInPlace();
 
@@ -27,18 +27,17 @@ createMatchButton.addEventListener('click', () => {
         piecesDeployed = true;
 
         addSurrenderButton();
-    } 
-    if (piecesDeployed) 
+    }
+    if (piecesDeployed)
     {
         piecePositioned = true;
-        enableDraggingForPlayer(currentPlayer);
         createMatchButton.disabled = true;
         createMatchButton.textContent = 'Game Started';
         createMatchButton.classList.add('opacity-50', 'cursor-not-allowed');
     }
 });
 
-function addSurrenderButton() 
+function addSurrenderButton()
 {
     const surrenderButton = document.createElement('button');
     surrenderButton.textContent = 'Surrender';
@@ -46,11 +45,11 @@ function addSurrenderButton()
     surrenderButton.addEventListener('click', () => {
         alert('You have surrendered!');
     });
-    
+
     document.getElementById('buttonContainer').appendChild(surrenderButton);
 }
 
-function isValidMove(startX, startY, endX, endY) 
+function isValidMove(startX, startY, endX, endY)
 {
     const dx = Math.abs(endX - startX);
     const dy = Math.abs(endY - startY);
@@ -58,7 +57,7 @@ function isValidMove(startX, startY, endX, endY)
     return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
 }
 
-function enableDragging() 
+function enableDragging()
 {
     const allPieces = document.querySelectorAll('.piece');
     allPieces.forEach(piece => {
@@ -66,7 +65,7 @@ function enableDragging()
     });
 }
 
-function lockPiecesInPlace() 
+function lockPiecesInPlace()
 {
     const allPieces = document.querySelectorAll('.piece');
     allPieces.forEach(piece => {
@@ -76,16 +75,16 @@ function lockPiecesInPlace()
 
 function enableDraggingForPlayer(currentPlayer)
 {
-    if (currentPlayer === 1) 
+    if (currentPlayer === 1)
     {
         const player1Pieces = document.querySelectorAll('.piece');
 
         console.log(player1Pieces);
-        
+
         player1Pieces.forEach(piece => {
             piece.draggable = true;
         });
-    } 
+    }
 }
 
 // Image map: Links ranks to image files
@@ -142,16 +141,16 @@ const pieces = [
     { rank: 'P12SG', player: 1 }, { rank: 'P11SG', player: 1 }, { rank: 'P1Col', player: 1 },
     { rank: 'P1LC', player: 1 }, { rank: 'P1Maj', player: 1 }, { rank: 'P1Cap', player: 1 },
     { rank: 'P11Li', player: 1 }, { rank: 'P12Li', player: 1 }, { rank: 'P1Sgt', player: 1 },
-    { rank: 'P1Prv1', player: 1 }, { rank: 'P1Prv2', player: 1 }, { rank: 'P1Prv3', player: 1 }, 
-    { rank: 'P1Prv4', player: 1 }, { rank: 'P1Prv5', player: 1 }, { rank: 'P1Prv6', player: 1 },  
+    { rank: 'P1Prv1', player: 1 }, { rank: 'P1Prv2', player: 1 }, { rank: 'P1Prv3', player: 1 },
+    { rank: 'P1Prv4', player: 1 }, { rank: 'P1Prv5', player: 1 }, { rank: 'P1Prv6', player: 1 },
     { rank: 'P1Spy1', player: 1 }, { rank: 'P1Spy2', player: 1 }, { rank: 'P1Flg', player: 1 },
 
     { rank: 'P25SG', player: 2 }, { rank: 'P24SG', player: 2 }, { rank: 'P23SG', player: 2 },
     { rank: 'P22SG', player: 2 }, { rank: 'P21SG', player: 2 }, { rank: 'P2Col', player: 2 },
     { rank: 'P2LC', player: 2 }, { rank: 'P2Maj', player: 2 }, { rank: 'P2Cap', player: 2 },
     { rank: 'P21Li', player: 2 }, { rank: 'P22Li', player: 2 }, { rank: 'P2Sgt', player: 2 },
-    { rank: 'P2Prv1', player: 2 }, { rank: 'P2Prv2', player: 2 }, { rank: 'P2Prv3', player: 2 }, 
-    { rank: 'P2Prv4', player: 2 }, { rank: 'P2Prv5', player: 2 }, { rank: 'P2Prv6', player: 2 },  
+    { rank: 'P2Prv1', player: 2 }, { rank: 'P2Prv2', player: 2 }, { rank: 'P2Prv3', player: 2 },
+    { rank: 'P2Prv4', player: 2 }, { rank: 'P2Prv5', player: 2 }, { rank: 'P2Prv6', player: 2 },
     { rank: 'P2Spy1', player: 2 }, { rank: 'P2Spy2', player: 2 }, { rank: 'P2Flg', player: 2 },
 ];
 
@@ -170,11 +169,11 @@ const rankHierarchy = {
 const gameBoard = document.getElementById('gameBoard');
 let board = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
-function createPiece(rank, player) 
+function createPiece(rank, player)
 {
     const piece = document.createElement('div');
     piece.classList.add('piece', `player${player}`);
-    
+
     piece.style.backgroundImage = `url(${pieceImages[rank]})`;
 
     piece.draggable = true;
@@ -185,11 +184,11 @@ function createPiece(rank, player)
     return piece;
 }
 
-function initializeBoard() 
+function initializeBoard()
 {
-    for (let i = 0; i < rows; i++) 
+    for (let i = 0; i < rows; i++)
     {
-        for (let j = 0; j < cols; j++) 
+        for (let j = 0; j < cols; j++)
         {
             const cell = document.createElement('div');
             cell.classList.add('cell');
@@ -205,18 +204,18 @@ function initializeBoard()
 
     pieces.forEach((piece) => {
         let x, y;
-        do 
+        do
         {
-            if (piece.player === 2) 
+            if (piece.player === 2)
             {
-                x = Math.floor(Math.random() * 3); 
-            } 
-            else if (piece.player === 1) 
-            {
-                x = Math.floor(Math.random() * 3) + (rows - 3); 
+                x = Math.floor(Math.random() * 3);
             }
-            y = Math.floor(Math.random() * cols); 
-        } while (board[x][y]); 
+            else if (piece.player === 1)
+            {
+                x = Math.floor(Math.random() * 3) + (rows - 3);
+            }
+            y = Math.floor(Math.random() * cols);
+        } while (board[x][y]);
 
         const pieceElement = createPiece(piece.rank, piece.player);
         const cell = gameBoard.querySelector(`[data-x="${x}"][data-y="${y}"]`);
@@ -229,9 +228,9 @@ function initializeBoard()
 let draggedPiece = null;
 let startX = null, startY = null;
 
-function dragStart(e) 
+function dragStart(e)
 {
-    if (!gameStarted) 
+    if (!gameStarted)
     {
         e.preventDefault();
         return;
@@ -246,10 +245,10 @@ function dragStart(e)
     }, 0);
 }
 
-function dragEnd(e) 
+function dragEnd(e)
 {
     setTimeout(() => {
-        if (draggedPiece) 
+        if (draggedPiece)
         {
             draggedPiece.style.display = 'flex';
         }
@@ -263,11 +262,11 @@ function dragOver(e) {
     e.preventDefault();
 }
 
-function drop(e) 
+function drop(e)
 {
     if (!piecePositioned)
     {
-        if (!gameStarted) return; 
+        if (!gameStarted) return;
 
         const x = parseInt(e.target.getAttribute('data-x'));
         const y = parseInt(e.target.getAttribute('data-y'));
@@ -276,24 +275,24 @@ function drop(e)
 
         const targetPiece = targetCell.querySelector('.piece');
 
-        if (draggedPiece.classList.contains('player1') && x < 4) 
+        if (draggedPiece.classList.contains('player1') && x < 4)
         {
-            return; 
+            return;
         }
-        if (draggedPiece.classList.contains('player2') && x >= 4) 
+        if (draggedPiece.classList.contains('player2') && x >= 4)
         {
-            return; 
+            return;
         }
 
-        if (targetPiece) 
+        if (targetPiece)
         {
-            if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2')) 
+            if (draggedPiece.classList.contains('player1') && targetPiece.classList.contains('player2'))
             {
-                return; 
+                return;
             }
-            if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1')) 
+            if (draggedPiece.classList.contains('player2') && targetPiece.classList.contains('player1'))
             {
-                return; 
+                return;
             }
 
             const originalCell = draggedPiece.parentNode;
@@ -305,7 +304,7 @@ function drop(e)
             board[startX][startY] = targetPiece ? targetPiece.textContent : null;
             board[x][y] = draggedPiece.textContent;
 
-        } 
+        }
         else if(piecePositioned)
         {
             if (piecesDeployed && isValidMove(startX, startY, endX, endY))
@@ -317,13 +316,13 @@ function drop(e)
 
                 currentPlayer = currentPlayer === 1 ? 2 : 1;
                 enableDraggingForPlayer(currentPlayer);
-            } 
-            else 
+            }
+            else
             {
                 alert("Invalid move or pieces are not deployed!");
             }
         }
-        else 
+        else
         {
             targetCell.appendChild(draggedPiece);
 
