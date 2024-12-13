@@ -1,5 +1,3 @@
----
-
 # Salakot-Salpakan  
 
 ## 🎮 About  
@@ -104,5 +102,3 @@ This project is licensed under the MIT License.
 For support or inquiries, reach out at:  
 - **Email:** support@salakotsalpakan.com  
 - **Website:** [www.salakotsalpakan.com](http://www.salakotsalpakan.com)  
-
----  
